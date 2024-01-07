@@ -1,11 +1,15 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:idlix/screen/setting.dart';
 import 'package:idlix/style/style.dart';
+import 'package:image_picker/image_picker.dart';
 
 class MySpace extends StatefulWidget {
   const MySpace({super.key});
@@ -165,8 +169,10 @@ class StatusLangganan extends StatelessWidget {
 
 class UserProfile extends StatelessWidget {
   UserProfile({super.key});
+
   final db = FirebaseFirestore.instance;
   final uid = FirebaseAuth.instance.currentUser?.uid;
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
@@ -191,22 +197,69 @@ class UserProfile extends StatelessWidget {
   }
 }
 
-class ImageProfile extends StatelessWidget {
+class ImageProfile extends StatefulWidget {
   ImageProfile({super.key});
+
+  @override
+  State<ImageProfile> createState() => _ImageProfileState();
+}
+
+class _ImageProfileState extends State<ImageProfile> {
   final db = FirebaseFirestore.instance;
   final uid = FirebaseAuth.instance.currentUser?.uid;
+  File? _image;
+  final picker = ImagePicker();
+  User? user = FirebaseAuth.instance.currentUser;
+  final storage = FirebaseStorage.instance;
+
+  Future getImage() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  Future uploadImageToFirebase() async {
+    String uid = user?.uid ?? '';
+    if (_image != null) {
+      Reference ref =
+          FirebaseStorage.instance.ref().child('profile_image/$uid');
+      UploadTask uploadTask = ref.putFile(_image!);
+      TaskSnapshot storageTaskSnapshot =
+          await uploadTask.whenComplete(() => null);
+      String imageURL = await storageTaskSnapshot.ref.getDownloadURL();
+      db.collection("userData").doc(uid).set({
+        "image": imageURL,
+      }, SetOptions(merge: true));
+      print('Image URL: $imageURL');
+    } else {
+      print('No image selected.');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-        stream: db.collection("userData").doc(uid).snapshots(),
-        builder: (context, snapshot) {
-          var data = snapshot.data;
+    return InkWell(
+      onDoubleTap: () async {
+        await getImage();
+        await uploadImageToFirebase();
+      },
+      child: StreamBuilder(
+          stream: db.collection("userData").doc(uid).snapshots(),
+          builder: (context, snapshot) {
+            var data = snapshot.data;
 
-          print(data?['username'] ?? '');
-          return CircleAvatar(
-            radius: 40,
-            backgroundImage: NetworkImage(data?['image'] ?? ''),
-          );
-        });
+            print(data?['username'] ?? '');
+            return CircleAvatar(
+              radius: 40,
+              backgroundImage: NetworkImage(data?['image'] ?? ''),
+            );
+          }),
+    );
   }
 }
