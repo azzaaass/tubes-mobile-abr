@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:idlix/screen/film_search.dart';
 import 'package:idlix/screen/homepage.dart';
 import 'package:idlix/screen/my_space.dart';
 import 'package:idlix/style/style.dart';
@@ -15,7 +16,7 @@ class _HomeState extends State<Home> {
   int selectedIndex = 0;
   final List<Widget> page = [
     const Homepage(),
-    Center(),
+    const FilmSearch(),
     const MySpace(),
   ];
 

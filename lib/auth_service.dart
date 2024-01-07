@@ -4,7 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final db = FirebaseFirestore.instance;
-  final String imageNull = "https://firebasestorage.googleapis.com/v0/b/tubes-iot-affe1.appspot.com/o/profile_images%2Fno-photo-available.png?alt=media&token=99c3e85d-64ff-4353-82a3-cb746f81e2c1";
+  final String imageNull =
+      "https://firebasestorage.googleapis.com/v0/b/tubes-iot-affe1.appspot.com/o/profile_images%2Fno-photo-available.png?alt=media&token=99c3e85d-64ff-4353-82a3-cb746f81e2c1";
   Future<String?> register({
     required String username,
     required String email,
@@ -22,6 +23,8 @@ class AuthService {
         "username": username,
         "image": imageNull,
         "phone": "",
+        "role": "",
+        "status": "",
       }).onError((error, stackTrace) => print("Error writing : $error"));
 
       return 'Registration Success';
