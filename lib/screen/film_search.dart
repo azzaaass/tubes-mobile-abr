@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:idlix/screen/film_detail.dart';
 import 'package:idlix/style/style.dart';
 
 import 'dart:developer';
@@ -95,8 +96,7 @@ class _FilmSearchState extends State<FilmSearch> {
                   var data = snapshot.data!.docs;
                   return GridView.builder(
                     itemCount: data.length,
-                    gridDelegate:
-                        SliverGridDelegateWithFixedCrossAxisCount(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: isGrid2 ? 2 : 3,
                       mainAxisExtent: isGrid2 ? 230.0 : 180,
                       crossAxisSpacing: 10.0,
@@ -105,7 +105,21 @@ class _FilmSearchState extends State<FilmSearch> {
                     itemBuilder: (context, index) {
                       // return Text(data[index]['name']);
                       return InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => FilmDetail(
+                                    gambar: data[index]['gambar'],
+                                    nama: data[index]['nama'],
+                                    katergori: data[index]['kategori'],
+                                    tahun: data[index]['tahun'],
+                                    bahasa: data[index]['bahasa'],
+                                    usia: data[index]['usia'],
+                                    berlangganan: data[index]['berlangganan'],
+                                    deskripsi: data[index]['deskripsi']),
+                              ));
+                        },
                         child: Container(
                           height: 150,
                           width: mediaQuery.size.width / 2,

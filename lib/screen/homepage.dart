@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:idlix/screen/film_detail.dart';
 import 'package:idlix/style/style.dart';
 
 class Homepage extends StatefulWidget {
@@ -68,7 +69,7 @@ class _HomepageState extends State<Homepage> {
             ),
           ),
           Container(
-            padding:const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             height: 200,
             child: StreamBuilder(
               stream: db.collection("film").limit(3).snapshots(),
@@ -97,7 +98,21 @@ class _HomepageState extends State<Homepage> {
                   itemBuilder: (context, index) {
                     // return Text(data[index]['name']);
                     return InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => FilmDetail(
+                                  gambar: data[index]['gambar'],
+                                  nama: data[index]['nama'],
+                                  katergori: data[index]['kategori'],
+                                  tahun: data[index]['tahun'],
+                                  bahasa: data[index]['bahasa'],
+                                  usia: data[index]['usia'],
+                                  berlangganan: data[index]['berlangganan'],
+                                  deskripsi: data[index]['deskripsi']),
+                            ));
+                      },
                       child: Container(
                         width: mediaQuery.size.width / 2,
                         decoration: BoxDecoration(
@@ -155,7 +170,21 @@ class _HomepageState extends State<Homepage> {
                   itemBuilder: (context, index) {
                     // return Text(data[index]['name']);
                     return InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => FilmDetail(
+                                  gambar: data[index]['gambar'],
+                                  nama: data[index]['nama'],
+                                  katergori: data[index]['kategori'],
+                                  tahun: data[index]['tahun'],
+                                  bahasa: data[index]['bahasa'],
+                                  usia: data[index]['usia'],
+                                  berlangganan: data[index]['berlangganan'],
+                                  deskripsi: data[index]['deskripsi']),
+                            ));
+                      },
                       child: Container(
                         height: 150,
                         width: mediaQuery.size.width / 2,
