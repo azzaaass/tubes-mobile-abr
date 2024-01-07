@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:idlix/screen/film_detail.dart';
 import 'package:idlix/screen/setting.dart';
 import 'package:idlix/style/style.dart';
 import 'package:image_picker/image_picker.dart';
@@ -23,10 +24,12 @@ class _MySpaceState extends State<MySpace> {
   final uid = FirebaseAuth.instance.currentUser?.uid;
   @override
   Widget build(BuildContext context) {
+    MediaQueryData mediaQuery = MediaQuery.of(context);
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -67,6 +70,9 @@ class _MySpaceState extends State<MySpace> {
                   ),
                 ),
               ],
+            ),
+            const SizedBox(
+              height: 20,
             ),
             Row(
               children: [
@@ -122,7 +128,153 @@ class _MySpaceState extends State<MySpace> {
                   ),
                 ),
               ],
-            )
+            ),
+            const SizedBox(
+              height: 30,
+            ),
+            Text(
+              "Riwayat menonton",
+              style: GoogleFonts.roboto(
+                  textStyle: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.w500, color: white)),
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            SizedBox(
+              height: 200,
+              child: StreamBuilder(
+                stream: db.collection("film").limit(3).snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text("Error"),
+                    );
+                  }
+                  var data = snapshot.data!.docs;
+                  return GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: data.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      mainAxisExtent: 160,
+                      crossAxisSpacing: 10.0,
+                      mainAxisSpacing: 10.0,
+                    ),
+                    itemBuilder: (context, index) {
+                      // return Text(data[index]['name']);
+                      return InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => FilmDetail(
+                                    gambar: data[index]['gambar'],
+                                    nama: data[index]['nama'],
+                                    katergori: data[index]['kategori'],
+                                    tahun: data[index]['tahun'],
+                                    bahasa: data[index]['bahasa'],
+                                    usia: data[index]['usia'],
+                                    berlangganan: data[index]['berlangganan'],
+                                    deskripsi: data[index]['deskripsi']),
+                              ));
+                        },
+                        child: Container(
+                          width: mediaQuery.size.width / 2,
+                          decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image: NetworkImage(data[index]['gambar']),
+                                  fit: BoxFit.cover),
+                              borderRadius: BorderRadius.circular(10)),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Text(
+              "Saran untuk anda",
+              style: GoogleFonts.roboto(
+                  textStyle: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.w500, color: white)),
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            SizedBox(
+              height: 200,
+              child: StreamBuilder(
+                stream: db
+                    .collection("film")
+                    .limit(3)
+                    .orderBy("nama", descending: false)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text("Error"),
+                    );
+                  }
+                  var data = snapshot.data!.docs;
+                  return GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: data.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      mainAxisExtent: 160,
+                      crossAxisSpacing: 10.0,
+                      mainAxisSpacing: 10.0,
+                    ),
+                    itemBuilder: (context, index) {
+                      // return Text(data[index]['name']);
+                      return InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => FilmDetail(
+                                    gambar: data[index]['gambar'],
+                                    nama: data[index]['nama'],
+                                    katergori: data[index]['kategori'],
+                                    tahun: data[index]['tahun'],
+                                    bahasa: data[index]['bahasa'],
+                                    usia: data[index]['usia'],
+                                    berlangganan: data[index]['berlangganan'],
+                                    deskripsi: data[index]['deskripsi']),
+                              ));
+                        },
+                        child: Container(
+                          width: mediaQuery.size.width / 2,
+                          decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image: NetworkImage(data[index]['gambar']),
+                                  fit: BoxFit.cover),
+                              borderRadius: BorderRadius.circular(10)),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
           ],
         ),
       ),
@@ -185,11 +337,19 @@ class UserProfile extends StatelessWidget {
             children: [
               Text(
                 data?['username'] ?? '',
-                style: const TextStyle(color: white),
+                style: GoogleFonts.roboto(
+                    textStyle: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: white)),
               ),
               Text(
                 data?['phone'] ?? '',
-                style: const TextStyle(color: white),
+                style: GoogleFonts.roboto(
+                    textStyle: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: white)),
               ),
             ],
           );
