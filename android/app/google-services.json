@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "829435033592",
+    "project_id": "idlix-31849",
+    "storage_bucket": "idlix-31849.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:829435033592:android:0378d910ec0ebeae26080d",
+        "android_client_info": {
+          "package_name": "com.example.idlix"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBzao4EtsDMUA7h3lotbOqUyNgnme29IbE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
