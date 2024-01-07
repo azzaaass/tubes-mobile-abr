@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 const Color dark = Color(0xFF0f1014);
 const Color white = Color(0xFFffffff);
 const Color red = Color(0xFFe6111a);
-const Color blue = Color(0xFF4f8ad0);
+const Color blue = Color.fromARGB(255, 14, 94, 232);
 const Color navy = Color.fromARGB(255, 3, 27, 68);
 
 
